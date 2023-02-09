@@ -134,7 +134,11 @@ function WebD(params) {
           <Button
             variant="contained"
             color="primary"
-            onClick={params.handleNew}
+            onClick={
+              params.isExist
+                ? () => params.editCode(params.id)
+                : params.handleNew
+            }
           >
             {"Save"}
           </Button>

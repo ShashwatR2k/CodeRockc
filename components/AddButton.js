@@ -6,8 +6,21 @@ const AddButton = (params) => {
   const { language } = useEditor();
 
   function handleNew() {
+    params.setOpen({
+      html: "",
+      css: "",
+      javascript: "",
+      title: "",
+      id: "",
+      isExist: false,
+    });
+    params.setTitle("");
+    params.setHtml("");
+    params.setCss("");
+    params.setJs("");
+    params.setId("");
+    params.setIsExist(false);
     console.log("new", language, params);
-    params.setOpen({ html: "", css: "", javascript: "", name: "" });
   }
 
   return (
