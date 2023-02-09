@@ -5,13 +5,13 @@ import { useEditor } from "../context/AppContext";
 const AddButton = (params) => {
   const { language } = useEditor();
 
-  function handleSubmission() {
+  function handleNew() {
     console.log("new", language, params);
     params.setOpen({ html: "", css: "", javascript: "", name: "" });
   }
 
   return (
-    <Button variant="contained" color="primary" onClick={handleSubmission}>
+    <Button variant="contained" color="primary" onClick={handleNew}>
       {"Add New"}
     </Button>
   );
