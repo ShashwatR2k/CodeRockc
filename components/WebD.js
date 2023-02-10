@@ -18,8 +18,43 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function WebD(params) {
+function WebD() {
   const classes = useStyles();
+  const {
+    dbInstance,
+    id,
+    setId,
+    open,
+    setOpen,
+    list,
+    setList,
+    css,
+    setCss,
+    html,
+    setHtml,
+    javascript,
+    setJs,
+    title,
+    setTitle,
+    isExist,
+    setIsExist,
+    setShowLineNumbers,
+    setAlignment,
+    language,
+    setLanguage,
+    code,
+    setCode,
+    stdIn,
+    setStdIn,
+    output,
+    setOutput,
+    getCodes,
+    editCode,
+    addNew,
+    alignment,
+    headTags,
+    cssFramework,
+  } = useEditor();
 
   const [srcDoc, setSrcDoc] = useState("");
 
@@ -27,12 +62,6 @@ function WebD(params) {
   const [cssOpen, setCssOpen] = useState(true);
   const [jsOpen, setJsOpen] = useState(true);
 
-  const { alignment, headTags, cssFramework } = useEditor();
-  useEffect(() => {
-    params.setHtml(params.html);
-    params.setCss(params.css);
-    params.setJs(params.javascript);
-  }, [params]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSrcDoc(`
@@ -40,12 +69,12 @@ function WebD(params) {
         <head>
         ${headTags}
         ${cssFramework === "none" ? "" : getCssFrameworkLink(cssFramework)}
-        <style>${params.css}</style>
+        <style>${css}</style>
         </head>
         <body>
-        ${params.html}
+        ${html}
         <script>
-        ${params.javascript}
+        ${javascript}
         </script>
         </body>
         </html>
@@ -53,14 +82,7 @@ function WebD(params) {
     }, 250);
 
     return () => clearTimeout(timeout);
-  }, [
-    params.html,
-    params.css,
-    params.javascript,
-    headTags,
-    cssFramework,
-    params,
-  ]);
+  }, [html, css, javascript, headTags, cssFramework]);
 
   const container = (alignment) => {
     if (alignment === "right") {
@@ -76,7 +98,7 @@ function WebD(params) {
   };
 
   return (
-    <div className={`grid h-full bg-white   ${container(alignment)}`}>
+    <div className={`grid h-full bg-background   ${container(alignment)}`}>
       {/* Adjust orientation of editors */}
       <div
         className={`flex bg-background p-1 pr-3 gap-4 ${
@@ -87,8 +109,8 @@ function WebD(params) {
         <div className={editorOpenStyle(htmlOpen)}>
           <Editor
             language="html"
-            code={params.html}
-            setCode={params.setHtml}
+            code={html}
+            setCode={setHtml}
             editorOpen={htmlOpen}
             setEditorOpen={setHtmlOpen}
           />
@@ -98,8 +120,8 @@ function WebD(params) {
         <div className={editorOpenStyle(cssOpen)}>
           <Editor
             language="css"
-            code={params.css}
-            setCode={params.setCss}
+            code={css}
+            setCode={setCss}
             editorOpen={cssOpen}
             setEditorOpen={setCssOpen}
           />
@@ -109,8 +131,8 @@ function WebD(params) {
         <div className={editorOpenStyle(jsOpen)}>
           <Editor
             language="javascript"
-            code={params.javascript}
-            setCode={params.setJs}
+            code={javascript}
+            setCode={setJs}
             editorOpen={jsOpen}
             setEditorOpen={setJsOpen}
           />
@@ -118,7 +140,7 @@ function WebD(params) {
       </div>
 
       {/* Output section */}
-      <div>
+      <div class={`flex p-1 pr-3 gap-4 flex-col}`}>
         <iframe
           title="output"
           sandbox="allow-scripts"
@@ -126,24 +148,21 @@ function WebD(params) {
           className="h-full"
           width="100%"
           srcDoc={srcDoc}
+          style={{ backgroundColor: "white" }}
         />
       </div>
-      <sectionc class="h-12 fixed bottom-0 right-3">
+      <section class="h-12 fixed bottom-0 right-3">
         <div class="h-12">
           {" "}
           <Button
             variant="contained"
             color="primary"
-            onClick={
-              params.isExist
-                ? () => params.editCode(params.id)
-                : params.handleNew
-            }
+            onClick={isExist ? () => editCode(id) : addNew}
           >
             {"Save"}
           </Button>
         </div>
-      </sectionc>
+      </section>
     </div>
   );
 }

@@ -2,11 +2,12 @@ import { Button } from "@material-ui/core";
 import WebD from "./WebD";
 import { useEditor } from "../context/AppContext";
 
-const AddButton = (params) => {
-  const { language } = useEditor();
+const AddButton = () => {
+  const { setId, setOpen, setCss, setHtml, setJs, setTitle, setIsExist } =
+    useEditor();
 
   function handleNew() {
-    params.setOpen({
+    setOpen({
       html: "",
       css: "",
       javascript: "",
@@ -14,13 +15,12 @@ const AddButton = (params) => {
       id: "",
       isExist: false,
     });
-    params.setTitle("");
-    params.setHtml("");
-    params.setCss("");
-    params.setJs("");
-    params.setId("");
-    params.setIsExist(false);
-    console.log("new", language, params);
+    setTitle("");
+    setHtml("");
+    setCss("");
+    setJs("");
+    setId("");
+    setIsExist(false);
   }
 
   return (

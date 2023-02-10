@@ -2,84 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import AddButton from "../components/AddButton";
 import { useEditor } from "../context/AppContext";
-import { app, database } from "../firebaseConfig";
-import {
-  doc,
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import ShowCodeList from "../components/ShowCodeList";
 import WebD from "../components/WebD";
+import ShowTitle from "../components/ShowTitle";
 import { Button } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import cookieCutter from "cookie-cutter";
 
 const Home = () => {
-  const { language } = useEditor();
-  const [list, setList] = useState([]);
-  const [open, setOpen] = useState({});
-  const [html, setHtml] = useState("");
-  const [css, setCss] = useState("");
-  const [javascript, setJs] = useState("");
-  const [title, setTitle] = useState("Title");
-  const [id, setId] = useState("");
-  const [isExist, setIsExist] = useState(false);
-  const dbInstance = collection(database, "codes");
-
-  useEffect(() => {
-    setHtml(open?.html);
-    setCss(open?.css);
-    setJs(open?.javascript);
-    setTitle(open?.title);
-    open?.id && setId(open.id);
-    setIsExist(true);
-  }, [open]);
-
-  const isObjectEmpty = (objectName) => {
-    return JSON.stringify(objectName) === "{}";
-  };
-
-  function handleBack() {
-    setOpen({});
-  }
-
-  const getCodes = () => {
-    getDocs(dbInstance).then((data) => {
-      let codeList = data.docs.map((item) => {
-        return { ...item.data(), id: item.id };
-      });
-      setList([...codeList]);
-    });
-  };
+  const { title, setTitle, open, getCodes, isObjectEmpty, handleBack } =
+    useEditor();
 
   useEffect(() => {
     getCodes();
   }, []);
 
-  const handleNew = () => {
-    console.log(title, html, css, javascript);
-    addDoc(dbInstance, {
-      title: !title ? html : title,
-      html: html === undefined ? "" : html,
-      css: css === undefined ? "" : css,
-      javascript: javascript === undefined ? "" : javascript,
-      isExist: true,
-    });
-  };
-  const editCode = (id) => {
-    console.log(id);
-    console.log(title, html, css, javascript);
-    const collectionById = doc(database, "codes", id);
-
-    updateDoc(collectionById, {
-      title: !title ? html : title,
-      html: html,
-      css: css,
-      javascript: javascript,
-      isExist: true,
-    });
-  };
   const handleChange = (event) => {
     setTitle(event.target.value);
   };
@@ -98,70 +33,19 @@ const Home = () => {
             )}
           </div>
           <div class="basis-1/3 text-white w-full">
-            <form noValidate autoComplete="off">
-              <div>
-                <TextField
-                  id="filled-name"
-                  value={title}
-                  onChange={handleChange}
-                  variant="filled"
-                />
-              </div>
-            </form>
+            {!isObjectEmpty(open) && <ShowTitle />}
           </div>
-          <div class="basis-1/3 w-full justify-end">
+          <div class="basis-1/3 w-full justify-end display: grid h-1/3">
             {" "}
-            <AddButton
-              setOpen={setOpen}
-              id={id}
-              setId={setId}
-              html={html}
-              setHtml={setHtml}
-              css={css}
-              setCss={setCss}
-              javascript={javascript}
-              setJs={setJs}
-              title={title}
-              setTitle={setTitle}
-              handleNew={handleNew}
-              editCode={editCode}
-              isExist={isExist}
-              setIsExist={setIsExist}
-            />
+            <AddButton />
           </div>
         </div>
 
         {!isObjectEmpty(open) && (
-          <div class="h-full">
-            {!isObjectEmpty(open) ? (
-              <WebD
-                id={id}
-                html={html}
-                setHtml={setHtml}
-                css={css}
-                setCss={setCss}
-                javascript={javascript}
-                setJs={setJs}
-                title={title}
-                setTitle={setTitle}
-                handleNew={handleNew}
-                editCode={editCode}
-                isExist={isExist}
-              />
-            ) : (
-              <div />
-            )}
-          </div>
+          <div class="h-full">{!isObjectEmpty(open) ? <WebD /> : <div />}</div>
         )}
 
-        {isObjectEmpty(open) &&
-          list.map((items) => {
-            return (
-              <div class="basis-1/3 text-white">
-                <button onClick={() => setOpen(items)}>{items.name}</button>
-              </div>
-            );
-          })}
+        {isObjectEmpty(open) && <ShowCodeList />}
       </div>
     </Layout>
   );
