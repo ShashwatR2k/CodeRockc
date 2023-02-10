@@ -15,9 +15,6 @@ const Home = () => {
     getCodes();
   }, []);
 
-  const handleChange = (event) => {
-    setTitle(event.target.value);
-  };
   return (
     <Layout
       title="Home"
@@ -42,7 +39,10 @@ const Home = () => {
         </div>
 
         {!isObjectEmpty(open) && (
-          <div class="h-full">{!isObjectEmpty(open) ? <WebD /> : <div />}</div>
+          <div class="h-full">
+            {" "}
+            <WebD />
+          </div>
         )}
 
         {isObjectEmpty(open) && <ShowCodeList />}
