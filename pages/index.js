@@ -8,11 +8,11 @@ import ShowTitle from "../components/ShowTitle";
 import { Button } from "@material-ui/core";
 
 const Home = () => {
-  const { title, setTitle, open, getCodes, isObjectEmpty, handleBack } =
-    useEditor();
+  const { open, getCodes, isObjectEmpty, handleBack, getTime } = useEditor();
 
   useEffect(() => {
     getCodes();
+    getTime();
   }, []);
 
   return (

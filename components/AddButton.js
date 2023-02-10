@@ -1,5 +1,4 @@
 import { Button } from "@material-ui/core";
-import WebD from "./WebD";
 import { useEditor } from "../context/AppContext";
 
 const AddButton = () => {

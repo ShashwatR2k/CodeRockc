@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import cookieCutter from "cookie-cutter";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Button } from "@material-ui/core";
@@ -21,34 +20,14 @@ const useStyles = makeStyles(() => ({
 function WebD() {
   const classes = useStyles();
   const {
-    dbInstance,
     id,
-    setId,
-    open,
-    setOpen,
-    list,
-    setList,
     css,
     setCss,
     html,
     setHtml,
     javascript,
     setJs,
-    title,
-    setTitle,
     isExist,
-    setIsExist,
-    setShowLineNumbers,
-    setAlignment,
-    language,
-    setLanguage,
-    code,
-    setCode,
-    stdIn,
-    setStdIn,
-    output,
-    setOutput,
-    getCodes,
     editCode,
     addNew,
     alignment,

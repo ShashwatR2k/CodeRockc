@@ -15,7 +15,6 @@ export default function MonacoEditor({
   const { theme, fontFamily, fontSize, wrap, showLineNumbers } = useEditor();
 
   const handleEditorChange = (value, e) => {
-    console.log(value);
     setCode(value);
   };
 

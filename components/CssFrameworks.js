@@ -4,7 +4,6 @@ const CssFrameworks = () => {
   const { cssFramework, setCssFramework } = useEditor();
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setCssFramework(e.target.value);
   };
 
