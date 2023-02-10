@@ -65,13 +65,10 @@ export const AppProvider = ({ children }) => {
       list.sort(function (a, b) {
         var d1 = new Date(a.time);
         var d2 = new Date(b.time);
-        console.log(a, b, d1, d2);
         if (d1.getTime() > d2.getTime()) {
-          console.log(d1);
           return -1;
         }
         if (d1.getTime() < d2.getTime()) {
-          console.log(d2);
           return 1;
         }
         return 0;
@@ -80,7 +77,6 @@ export const AppProvider = ({ children }) => {
   };
 
   const addNew = () => {
-    console.log(title, html, css, javascript, "new");
     addDoc(dbInstance, {
       title: !title ? html : title,
       html: html === undefined ? "" : html,
