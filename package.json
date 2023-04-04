@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "start": "react-scripts start --openssl-legacy-provider ",
-    "build": "react-scripts --openssl-legacy-provider build"
+    "start": "next start",
+    "build": "next build"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
