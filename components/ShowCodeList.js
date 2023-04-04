@@ -18,13 +18,13 @@ const ShowCodeList = () => {
     <List>
       {list.map((items) => {
         return (
-          <ListItem onClick={() => setOpen(items)}>
+          <ListItem key={items.id} onClick={() => setOpen(items)}>
             <ListItemAvatar>
               <Avatar>
                 <FolderIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText style={{ color: "white" }} primary={items.title} />
+            <ListItemText style={{ color: "white" }} primary={items?.title} />
             <ListItemSecondaryAction>
               <IconButton
                 onClick={() => deleteCode(items.id)}

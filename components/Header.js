@@ -1,12 +1,14 @@
 import GitHubIcon from "@material-ui/icons/GitHub";
+import PersonIcon from "@material-ui/icons/Person";
 import Link from "next/link";
 import OrientationMenu from "../components/OrientationMenu";
 import SettingsModal from "../components/SettingsModal";
+import LoginMenu from "../components/LoginModal";
 import { useEditor } from "../context/AppContext";
 
 const Header = () => {
-  const { language } = useEditor();
-
+  const { language, startLogin, pfp } = useEditor();
+  console.log(pfp);
   return (
     <nav className="flex items-center justify-between px-16 py-3 shadow-md bg-paper">
       {/* Logo */}
@@ -20,12 +22,7 @@ const Header = () => {
 
       {/* Navigation buttons */}
       <div className="flex items-center justify-center gap-5 text-white">
-        {/* Change the orientation of editors (only for webd view) */}
         {language === "webd" && <OrientationMenu />}
-
-        {/* Choose language */}
-
-        {/* Opens settings modal */}
         <SettingsModal />
 
         <a
@@ -34,6 +31,14 @@ const Header = () => {
         >
           <GitHubIcon />
         </a>
+        <button
+          onClick={() => {
+            startLogin();
+          }}
+        >
+          <PersonIcon />
+        </button>
+        <LoginMenu />
       </div>
     </nav>
   );

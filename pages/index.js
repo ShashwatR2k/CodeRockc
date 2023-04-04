@@ -7,8 +7,11 @@ import WebD from "../components/WebD";
 import ShowTitle from "../components/ShowTitle";
 import { Button } from "@material-ui/core";
 
+import * as firebase from "firebase/app";
+
 const Home = () => {
-  const { open, getCodes, isObjectEmpty, handleBack, getTime } = useEditor();
+  const { open, getCodes, isObjectEmpty, handleBack, getTime, signAnonymous } =
+    useEditor();
 
   useEffect(() => {
     getCodes();

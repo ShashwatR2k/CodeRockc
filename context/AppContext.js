@@ -9,7 +9,17 @@ import {
   deleteDoc,
   Timestamp,
 } from "firebase/firestore";
-import { app, database } from "../firebaseConfig";
+import { app, database, provider, auth } from "../firebaseConfig";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInAnonymously,
+  onAuthStateChanged,
+  linkWithCredential,
+  signOut,
+} from "firebase/auth";
+
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -27,12 +37,15 @@ export const AppProvider = ({ children }) => {
   const [javascript, setJs] = useState("");
   const [title, setTitle] = useState("Title");
   const [id, setId] = useState("");
+  const [pfp, setPfp] = useState("");
   const [isExist, setIsExist] = useState(true);
   const [time, setTime] = useState("");
 
+  const [uid, setUid] = useState("");
   const [code, setCode] = useState("");
   const [stdIn, setStdIn] = useState("");
   const [output, setOutput] = useState("");
+  const [credential, setCredential] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,23 +69,38 @@ export const AppProvider = ({ children }) => {
     }
   }, [language]);
 
+  // useEffect(() => {
+  //   linkAnonymous();
+  // }, [credential]);
+
   const getCodes = () => {
     getDocs(dbInstance).then((data) => {
-      let codeList = data.docs.map((item) => {
-        return { ...item.data(), id: item.id };
-      });
-      setList([...codeList]);
-      list.sort(function (a, b) {
+      let codeList = data.docs.reduce((result, item) => {
+        if (
+          item._document.data.value.mapValue.fields?.userId?.stringValue
+            .toString()
+            .trim()
+            .valueOf() === uid.toString().trim().valueOf() ||
+          !item._document.data.value.mapValue.fields?.userId?.stringValue
+        ) {
+          result.push({ ...item.data(), id: item.id });
+        }
+        return result;
+      }, []);
+
+      codeList.sort(function (a, b) {
         var d1 = new Date(a.time);
         var d2 = new Date(b.time);
+
         if (d1.getTime() > d2.getTime()) {
-          return -1;
+          return 1;
         }
         if (d1.getTime() < d2.getTime()) {
-          return 1;
+          return -1;
         }
         return 0;
       });
+      setList([...codeList]);
     });
   };
 
@@ -84,6 +112,7 @@ export const AppProvider = ({ children }) => {
       javascript: javascript === undefined ? "" : javascript,
       isExist: true,
       time: time,
+      userId: uid,
     }).then(() => {
       setIsExist(true);
       getCodes();
@@ -117,6 +146,53 @@ export const AppProvider = ({ children }) => {
   const isObjectEmpty = (objectName) => {
     return JSON.stringify(objectName) === "{}";
   };
+  function startLogin() {
+    signOut(auth);
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setCredential(GoogleAuthProvider.credentialFromResult(result));
+        const token = credential.accessToken;
+        const user = result.user;
+        setPfp(user.photoURL);
+        setUid(user.uid);
+        console.log(pfp);
+      })
+
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setCredential(GoogleAuthProvider.credentialFromError(error));
+      });
+  }
+  function signAnonymous() {
+    signInAnonymously(auth)
+      .then(() => {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            const uid = user.uid;
+            // ...
+          } else {
+            // User is signed out
+            // ...
+          }
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+      });
+  }
+  function linkAnonymous() {
+    linkWithCredential(auth.currentUser, credential)
+      .then((usercred) => {
+        const user = usercred.user;
+        console.log("Anonymous account successfully upgraded", user);
+      })
+      .catch((error) => {
+        console.log("Error upgrading anonymous account", error);
+      });
+  }
   return (
     <AppContext.Provider
       value={{
@@ -146,6 +222,7 @@ export const AppProvider = ({ children }) => {
         setTitle,
         isExist,
         setIsExist,
+        pfp,
         time,
         setTime,
         setShowLineNumbers,
@@ -172,6 +249,8 @@ export const AppProvider = ({ children }) => {
         isObjectEmpty,
         handleBack,
         getTime,
+        startLogin,
+        signAnonymous,
       }}
     >
       {children}
